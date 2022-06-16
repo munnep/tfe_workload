@@ -63,6 +63,8 @@ terraform apply
 terraform login <tfe-url>
 ```
 - change the below settings to match your environment in the file base/main.tf
+hostname
+organization
 ```
 terraform {
   backend "remote" {
