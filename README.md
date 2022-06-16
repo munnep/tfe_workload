@@ -100,19 +100,20 @@ Running this load on a TFE environment with some incorrect settings on your TFE 
 ```
 sudo swapoff -a
 ```
-- On your TFE environment make sure that worker memory is 256MB
+- On your TFE environment make sure that worker memory is 128MB
 ```
 # see the current value
 replicatedctl app-config export --template "{{.capacity_memory.Value}}"
 
-# change it to 256
-replicatedctl app-config set capacity_memory --value 256
+# change it to 128
+replicatedctl app-config set capacity_memory --value 128
 
 # restart the application to apply the config changes
 replicatedctl app apply-config
 ```
 or change it in the dashboard  
-![](media/20220525204340.png)  
+![](media/20220615161223.png)    
+
 ## How to
 
 - Clone the repository to a machine that you want the load to run
@@ -142,6 +143,8 @@ terraform apply
 terraform login <tfe-url>
 ```
 - change the below settings to match your environment in the file base/main.tf
+hostname
+organization
 ```
 terraform {
   backend "remote" {
@@ -159,9 +162,16 @@ terraform {
 bash run.sh
 ```
 - Within TFE you should see all workspaces have jobs running now
-- In your performance charts of your TFE instance you should see that swap will be getting used now.
-Example screenshot of Netdata that was installed on the TFE server 
-![](media/20220615140407.png)    
+- you should see the tasks getting killed at some point like the following  
+![](media/20220615160858.png)  
+- Download a support bundle from your dashboard
+![](media/20220615160934.png)    
+- If you look in the bundle and search for oom-kill you will see you will get a find like the following
+```
+[17612.605083] br-c70e2168ae73: port 2(vethe99ed86) entered forwarding state
+[17744.519687] terraform invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+[17744.519696] CPU: 2 PID: 323609 Comm: terraform Not tainted 5.13.0-1022-aws #24~20.04.1-Ubuntu
+```
 - destroy the workspaces by going into the directory tfe_workload/terraform_workspaces
 ```
 terraform destroy

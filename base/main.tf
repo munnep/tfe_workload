@@ -1,7 +1,7 @@
 terraform {
   backend "remote" {
-    hostname     = "patrick-tfe5.bg.hashicorp-success.com"
-    organization = "test-memory"
+    hostname     = "patrick-tfe6.bg.hashicorp-success.com"
+    organization = "test"
 
     workspaces {
       prefix = "test-"
